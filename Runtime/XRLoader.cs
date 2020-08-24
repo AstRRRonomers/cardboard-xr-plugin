@@ -131,6 +131,7 @@ namespace Google.XR.Cardboard
                     alignmentRect.y, alignmentRect.width, alignmentRect.height);
         }
 
+#if UNITY_ANDROID || UNITY_IOS
         [DllImport(ApiConstants.CardboardXRUnity)]
         private static extern void CardboardUnity_setScreenParams(
             int x, int y, int width, int height);
@@ -144,5 +145,14 @@ namespace Google.XR.Cardboard
 
         [DllImport(ApiConstants.UnityCardboardJni)]
         private static extern void CardboardUnity_initializeAndroid(IntPtr context);
+#else
+        private static void CardboardUnity_setScreenParams(int x, int y, int width, int height) { }
+
+        private static void CardboardUnity_setWidgetCount(int count) { }
+
+        private static void CardboardUnity_setWidgetParams(int i, IntPtr texture, int x, int y, int width, int height) { }
+
+        private static void CardboardUnity_initializeAndroid(IntPtr context) { }
+#endif
     }
 }

@@ -131,7 +131,7 @@ namespace Google.XR.Cardboard
             // TODO(b/156501367):  Move this logic to the XR display provider.
             if (s_DeviceParamsCount == -1)
             {
-              return false;
+                return false;
             }
 
             return s_DeviceParamsCount != CardboardQrCode_getQrCodeScanCount();
@@ -148,6 +148,7 @@ namespace Google.XR.Cardboard
             CardboardUnity_setDeviceParametersChanged();
         }
 
+#if UNITY_ANDROID || UNITY_IOS
         [DllImport(ApiConstants.CardboardApi)]
         private static extern void CardboardQrCode_scanQrCodeAndSaveDeviceParams();
 
@@ -163,5 +164,20 @@ namespace Google.XR.Cardboard
 
         [DllImport(ApiConstants.CardboardXRUnity)]
         private static extern void CardboardUnity_setDeviceParametersChanged();
+#else
+        private static void CardboardQrCode_scanQrCodeAndSaveDeviceParams() { }
+
+        private static void CardboardQrCode_getSavedDeviceParams(out IntPtr encodedDeviceParams, out int size)
+        {
+            encodedDeviceParams = IntPtr.Zero;
+            size = 0;
+        }
+
+        private static void CardboardQrCode_destroy(IntPtr encodedDeviceParams) { }
+
+        private static int CardboardQrCode_getQrCodeScanCount() { return 0; }
+
+        private static void CardboardUnity_setDeviceParametersChanged() { }
+#endif
     }
 }
